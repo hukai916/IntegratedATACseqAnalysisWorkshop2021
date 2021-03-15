@@ -2,10 +2,6 @@
 
 # Instructors name and contact information
 - Kai Hu: kai.hu@umassmed.edu
-- Jianhong Ou: jianhong.ou@duke.edu
-- Rui Li: rui.li@umassmed.edu
-- Haibo Liu: haibol2017@gmail.com
-- Lihua Julie Zhu: julie.zhu@umassmed.edu
 
 # Workshop description
 ATAC-seq stands for Assay for Transposase-Accessible Chromatin using sequencing, which leverages a hyperactive transposase to cleave and tag ("tagmentation") double-strand DNA with sequencing adaptors at the same time. ATAC-seq is a faster yet more sensitive method for analyzing genome-wide chromatin accessibility. It is mostly used to map nucleosome positions but can also be applied to investigate transcription factor binding sites and more. This workshop focuses on the downstream analysis (after peak calling) of ATAC-seq data including the diagnostic plotting of fragment size distribution, detection of mitochondria contamination, nucleosome positioning and TF footprinting with package ATACseqQC.
@@ -34,7 +30,7 @@ A mini-lecture will be given at the beginning that will cover the basic ideas be
 | Overview of ATAC-seq                 | 3m   |
 | Comparison to alternatives           | 2m   |
 | Commonly used tools                  | 5m   |
-|     * peak caller                    |      |
+|     * Peak caller                    |      |
 |     * Nucleosome positioning         |      |
 |     * TF footprinting                |      |
 | Downstream analysis with ATACseqQC   | 10m  |
@@ -48,14 +44,14 @@ A mini-lecture will be given at the beginning that will cover the basic ideas be
 # Workshop goals and objectives
 
 ## Learning goals
-* Describe the basic idea behind ATAC-seq
+* Describe the basic ideas behind ATAC-seq
 * Get familiar with the commonly practiced tools used in ATAC-seq analysis
 * Understand the main challenges regarding ATAC-seq analysis
 
 ## Learning objectives
 * Get familiar with the package ATACseqQC
 * Perform diagnostic plotting of ATAC-seq data
-* Determine nucleosome positioning pattern
+* Determine nucleosome positioning patterns
 * Identify TF footprints
 
 ## References
