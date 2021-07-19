@@ -1,5 +1,5 @@
-Package: IntegratedATACseqAnalysis_Workshop2021
-Title: IntegratedATACseqAnalysis_Workshop2021 and Github Actions
+Package: IntegratedATACseqAnalysisWorkshop2021
+Title: IntegratedATACseqAnalysisWorkshop2021 and Github Actions
 Version: 0.0.1
 Authors@R:
     person(given = "Kai",
