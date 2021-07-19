@@ -1,64 +1,53 @@
-# Integrated ATAC-seq Data Analysis Workshop
+# BuildABiocWorkshop
 
-# Instructors name and contact information
-- Kai Hu: kai.hu@umassmed.edu
+This package is a template for building a Bioconductor workshop. The package
+includes Github actions to:
 
-# Workshop description
-ATAC-seq stands for Assay for Transposase-Accessible Chromatin using sequencing, which leverages a hyperactive transposase to cleave and tag ("tagmentation") double-strand DNA with sequencing adaptors at the same time. ATAC-seq is a faster yet more sensitive method for analyzing genome-wide chromatin accessibility. It is mostly used to map nucleosome positions but can also be applied to investigate transcription factor binding sites and more. This workshop focuses on the downstream analysis (after peak calling) of ATAC-seq data including the diagnostic plotting of fragment size distribution, detection of mitochondria contamination, nucleosome positioning and TF footprinting with package ATACseqQC.
+1. Set up bioconductor/bioconductor_docker:devel on Github resources
+2. Install package dependencies for your package (based on the `DESCRIPTION` file)
+3. Run `rcmdcheck::rcmdcheck`
+4. Build a pkgdown website and push it to github pages
+5. Build a docker image with the installed package and dependencies
 
-## Pre-requisites
-* General understanding of ATAC-seq analysis or have strong interests
-* Basic knowledge of R or Python
-* Familiar or have interests in the following concepts:
-   * Peak calling/annotation
-   * Nucleosome positioning
-   * Transcription factor footprinting
-* A computer that runs on Unix-like system
+## Responsibilities
 
-## Workshop participation
-A mini-lecture will be given at the beginning that will cover the basic ideas behind ATAC-seq and a brief comparison to alternatives like DNase-seq. I will then discuss the commonly used tools for ATAC-seq downstream analysis, specifically, the usage of the package ATACseqQC will be demonstrated. Last will be a Q/A section.
+This year, package authors will be primarily responsible for:
 
-## _R_ / _Bioconductor_ packages used
-* ATACseqQC [1]
-* ChIPpeakAnno [2]
-* motifStack [3]
-* diffbind [4]
+1. Creating a landing site of their choosing for their workshops (a website). This website should be listed in the `DESCRIPTION` file as the `URL`.
+2. Creating a docker account and image that will contain workshop materials and the installed packages necessary to run those materials. The name of the resulting docker image, including "tag" if desired, should be listed in a non-standard tag, `DockerImage:` in the `DESCRIPTION` file. 
 
-## Time outline
-| Activity                             | Time |
-|--------------------------------------|------|
-| Overview of ATAC-seq                 | 3m   |
-| Comparison to alternatives           | 2m   |
-| Commonly used tools                  | 5m   |
-|     * Peak caller                    |      |
-|     * Nucleosome positioning         |      |
-|     * TF footprinting                |      |
-| Downstream analysis with ATACseqQC   | 10m  |
-|     * Diagnostic plotting            |      |
-|     * Mitochondria contamination     |      |
-|     * Nucleosome positioning         |      |
-|     * TF footprinting                |      |
-| Hands-on demonstration               | 25m  |
-| Q/A section                          | 5m   |
+Both of those tasks can be accomplished using the Github actions included in this template package. The vignette accompanying this package describes how to accomplish both of these tasks.
 
-# Workshop goals and objectives
+## Details
 
-## Learning goals
-* Describe the basic ideas behind ATAC-seq
-* Get familiar with the commonly practiced tools used in ATAC-seq analysis
-* Understand the main challenges regarding ATAC-seq analysis
+For detailed instructions, see the `How to build a workshop` article/vignette.
 
-## Learning objectives
-* Get familiar with the package ATACseqQC
-* Perform diagnostic plotting of ATAC-seq data
-* Determine nucleosome positioning patterns
-* Identify TF footprints
+## Results of successful deployment
 
-## References
-[1] https://bioconductor.org/packages/release/bioc/html/ATACseqQC.html
+- A working docker image that contains the installed package and dependencies.
+- An up-to-date `pkgdown` website at https://YOURUSERNAME.github.io/YOURREPOSITORYNAME/
+- Docker image will be tagged with `latest`, `sha-XXXXXX` where `XXXXXX` is the hash of the current `master` commit, and `master`. 
 
-[2] https://bioconductor.org/packages/release/bioc/html/ChIPpeakAnno.html
+## To use the resulting image:
 
-[3] https://bioconductor.org/packages/release/bioc/html/motifStack.html
+```sh
+docker run -e PASSWORD=<choose_a_password_for_rstudio> -p 8787:8787 YOURDOCKERIMAGENAME
+```
+Once running, navigate to https://localhost:8787/ and then login with `rstudio`:`yourchosenpassword`. 
 
-[4] https://bioconductor.org/packages/release/bioc/html/DiffBind.html
+To try with **this** repository docker image:
+
+```sh
+docker run -e PASSWORD=abc -p 8787:8787 seandavi/buildabiocworkshop2020
+```
+
+*NOTE*: Running docker that uses the password in plain text like above exposes the password to others 
+in a multi-user system (like a shared workstation or compute node). In practice, consider using an environment 
+variable instead of plain text to pass along passwords and other secrets in docker command lines. 
+
+
+## Whatcha get
+
+https://seandavi.github.io/BuildABiocWorkshop
+
+![dockerhub](https://github.com/seandavi/BuildABiocWorkshop/raw/master/inst/images/dockerhub_result.png)
