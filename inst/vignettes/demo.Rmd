@@ -1,0 +1,110 @@
+---
+title: "Integrated ATAC-seq Analysis Workshop 2021"
+author: Kai Hu, Haibo^[Department of Molecular, Cell, and Cancer Biology, University of Massachusetts Medical School], Jianhong Ou^[Regeneration NEXT, Duke University School of Medicine, Duke University, Durham, NC, 27701, USA. Jianhong.ou@duke.edu], Lihua Julie Zhu^[ Corresponding author, Department of Molecular, Cell, and Cancer Biology, University of Massachusetts Medical School, Julie.Zhu@umassmed.edu]
+output: 
+  html_document:
+    theme: simplex
+    toc: true
+    toc_float: true
+    toc_depth: 3
+    fig_caption: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Demo I - Demo IV: post-alignment QC with ATACseqQC
+
+### Demo I: assessing mapping status
+Load required packages
+```{r, message=FALSE}
+library(ATACseqQC)
+```
+
+```{r}
+# For good dataset:
+bam_good <- system.file("vignettes/extdata", "SRR891270.chr20.full.bam", package = "IntegratedATACseqAnalysisWorkshop2021")
+res_bamQC_good <- bamQC(bam_good, outPath=NULL)
+head(res_bamQC_good)
+
+# For bad dataset:
+bam_bad <- system.file("vignettes/extdata", "SRR5800802.chr20.full.bam", package = "IntegratedATACseqAnalysisWorkshop2021")
+res_bamQC_bad <- bamQC(bam_bad, outPath=NULL)
+head(res_bamQC_bad)
+```
+
+Observation: the bam file quality of both files are good.
+
+### Demo II: assessing sequencing depth and library complexity
+```{r}
+# For good dataset:
+estimateLibComplexity(readsDupFreq(bam_good))
+
+# For bad dataset:
+estimateLibComplexity(readsDupFreq(bam_bad))
+```
+
+Observation: the library complexity of both data sets are comparable.
+How to assess the sequencing depth? Try ?saturationPlot in RStudio.
+
+### Demo III: assessing insert size distribution
+```{r}
+# For good dataset:
+bam_good_label <- gsub(".full.bam", "", basename(bam_good))
+fragSize <- fragSizeDist(bam_good, bam_good_label)
+
+# For bad dataset:
+bam_bad_label <- gsub(".full.bam", "", basename(bam_bad))
+fragSize <- fragSizeDist(bam_bad, bam_bad_label)
+```
+
+Observation: for the "good data", we can observe the characteristic multi-peak pattern in the plot, while we can only detect one peak in the "bad data", probably due to over digestion.
+
+### Demo IV: Assessing similarities of replicates.
+Here we show the similarities across 4 samples: good-full(input1), good-rmdup(input2), bad-full(input3), and bad-rmdup(input4).
+Load required package.
+```{r, message=FALSE}
+library(TxDb.Hsapiens.UCSC.hg38.knownGene)
+library(GenomicAlignments)
+```
+
+```{r, warning=FALSE}
+path <- system.file("vignettes/extdata", package="IntegratedATACseqAnalysisWorkshop2021", mustWork=TRUE)
+bam_files <- dir(path, "*.bam$", full.name=TRUE)
+bam_files
+
+gals <- lapply(bam_files, function(bamfile){ readBamFile(bamFile=bamfile, tag=character(0), asMates=FALSE) })
+
+txs <- transcripts(TxDb.Hsapiens.UCSC.hg38.knownGene)
+plotCorrelation(GAlignmentsList(gals), txs)
+```
+
+Observation: why input1 & input3 are more similar? Same for input2 and input4?
+
+### Demo V: Shift aligned reads
+```{r, warning=FALSE}
+## bamfile tags to be read in
+possibleTag <- combn(LETTERS, 2)
+possibleTag <- c(paste0(possibleTag[1, ], possibleTag[2, ]),
+                 paste0(possibleTag[2, ], possibleTag[1, ]))
+bamTop100 <- scanBam(BamFile(bamFile, yieldSize = 100),
+                     param = ScanBamParam(tag = possibleTag))[[1]]$tag
+tags <- names(bamTop100)[lengths(bamTop100)>0]
+
+## files will be output into outPath
+outPath <- "splitBam"
+if (dir.exists(outPath))
+{
+  unlink(outPath, recursive = TRUE, force = TRUE)
+}
+dir.create(outPath)
+## shift the coordinates of 5'ends of alignments in the bam file
+seqlev <- "chr1" ## subsample data for quick run
+which <- as(seqinfo(Hsapiens)[seqlev], "GRanges")
+gal <- readBamFile(bamFile, tag=tags, which=which, 
+                   asMates=TRUE, bigFile=TRUE)
+shiftedBamFile <- file.path(outPath, "shifted.bam")
+gal1 <- shiftGAlignmentsList(gal, outbam=shiftedBamFile)
+```
+

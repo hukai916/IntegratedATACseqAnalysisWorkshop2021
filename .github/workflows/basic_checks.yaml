@@ -67,7 +67,7 @@ jobs:
           BRANCH: gh-pages # The branch the action should deploy to.
           FOLDER: docs # The folder the action should deploy.
 
-      - uses: docker/build-push-action@v1
+      - uses: docker/build-push-action@v2
         with:
           # The two entries below need to be entered as
           # github secrets. The "secret" names are "DOCKER_USERNAME"
