@@ -28,7 +28,8 @@ Suggests:
     TxDb.Hsapiens.UCSC.hg38.knownGene,
     MotifDb,
     motifStack,
-    GenomicAlignments
+    GenomicAlignments,
+    SRAdb
 URL: https://hukai916.github.io/IntegratedATACseqAnalysisWorkshop2021/
 BugReports: https://github.com/hukai916/IntegratedATACseqAnalysisWorkshop2021/issues/new/choose
 VignetteBuilder: knitr

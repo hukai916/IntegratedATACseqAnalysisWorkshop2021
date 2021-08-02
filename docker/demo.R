@@ -1,21 +1,4 @@
----
-title: "Integrated ATAC-seq Data Analysis Workshop"
-author: "Kai Hu, Haibo, Jianhong Ou, Lihua Julie Zhu"
-output: 
-  html_document:
-    theme: simplex
-    toc: true
-    toc_float: true
-    toc_depth: 3
-    fig_caption: true
----
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
-### Load required packages
-```{r, message=FALSE}
+# Load required package:
 library(ATACseqQC)
 library(TxDb.Hsapiens.UCSC.hg38.knownGene)
 library(TxDb.Hsapiens.UCSC.hg19.knownGene)
@@ -24,134 +7,90 @@ library(GenomicAlignments)
 library(ChIPpeakAnno)
 library(MotifDb)
 library(jpeg)
-```
 
-### Demo I: assessing mapping status
-```{r}
-# Load datasets:
+# Demo I: assessing mapping status
+	# Load datasets:
 bam_good <- system.file("vignettes/extdata", "SRR891270.chr20.full.bam", package = "IntegratedATACseqAnalysisWorkshop2021")
 bam_bad <- system.file("vignettes/extdata", "SRR5800802.chr20.full.bam", package = "IntegratedATACseqAnalysisWorkshop2021")
 	
-# Good dataset:
+	# good dataset:
 res_bamQC_good <- bamQC(bam_good, outPath=NULL)
 head(res_bamQC_good)
-# Bad dataset:
-res_bamQC_bad <- bamQC(bam_bad, outPath=NULL)
-head(res_bamQC_bad)
-```
 
-Observation: the bam file quality of both files are good.
-
-### Demo II: assessing sequencing depth and library complexity
-```{r}
+# Demo II: assessing sequencing depth and library complexity
 estimateLibComplexity(readsDupFreq(bam_good))
-estimateLibComplexity(readsDupFreq(bam_bad))
 #saturationPlot(macs2_peak_file, subsamplingSizes) # you need called peak files from MACS2 as input
-```
 
-Observation: the library complexity of both data sets are comparable.
-How to assess the sequencing depth? Try ?saturationPlot in RStudio.
-
-### Demo III: assessing insert size distribution
-```{r}
-# Good dataset:
+# Demo III: assessing insert size distribution
+	# good dataset:
 bam_good_label <- gsub(".full.bam", "", basename(bam_good))
 fragSize <- fragSizeDist(bam_good, bam_good_label)
-# Bad dataset:
+	# bad dataset:
 bam_bad_label <- gsub(".full.bam", "", basename(bam_bad))
 fragSize <- fragSizeDist(bam_bad, bam_bad_label)
-```
 
-Observation: for the "good data", we can observe the characteristic multi-peak pattern in the plot, whereas we can only detect one peak in the "bad data", probably due to over-transposation.
-
-### Demo IV: assessing similarities of replicates
-```{r, warning=FALSE}
+# Demo IV: assessing similarities of replicates
 bamfiles <- dir(system.file("extdata", package="ATACseqQC", mustWork=TRUE), "*.bam$", full.name=TRUE)
 gals <- lapply(bamfiles, function(bamfile) { 
 	readBamFile(bamFile=bamfile, which=GRanges("chr1", IRanges(1, 1e6)), asMates=FALSE) })
 plotCorrelation(GAlignmentsList(gals), transcripts(TxDb.Hsapiens.UCSC.hg19.knownGene), seqlev="chr1")
-```
 
-Observation: input1 is quite different from other samples.
-
-### Demo V: shifting aligned reads
-```{r, warning=FALSE}
-# Good dataset:
+# Demo V: shifting aligned reads
+	# good dataset:
 gal_good <- readBamFile(bam_good, asMates = TRUE)
 gal1_good <- shiftGAlignmentsList(gal_good, outbam = "shifted_good.bam")
 head(gal1_good)
-# Bad dataset:
+	# bad dataset:
 gal_bad <- readBamFile(bam_bad, asMates = TRUE)
 gal1_bad <- shiftGAlignmentsList(gal_bad, outbam = "shifted_bad.bam")
 head(gal1_bad)
-```
 
-### Demo VI: splitting bam file into bins
-```{r, warning=FALSE}
+# Demo VI: splitting bam file into bins
 txs <- transcripts(TxDb.Hsapiens.UCSC.hg38.knownGene)
 	# good data:
 obj_split_good <- splitGAlignmentsByCut(gal1_good, txs=txs, genome="Hsapiens", outPath = "split_bam_good")
 	# bad data:
 obj_split_bad <- splitGAlignmentsByCut(gal1_bad, txs=txs, genome="Hsapiens", outPath = "split_bam_bad")
 dir("split_bam_good")
-```
 
-Observation: bam files are splited into multiple subset bam files.
-
-### Demo VII: plotting aggregate signals around TSSs
-```{r, warning=FALSE}
-# Good dataset:
+# Demo VII: plotting aggregate signals around TSSs
+	# good dataset:
 bam_good_nuc <- file.path("split_bam_good", c("NucleosomeFree.bam", "mononucleosome.bam", "dinucleosome.bam", "trinucleosome.bam"))
-	# find TSS coordinates:
+		# find TSS coordinates:
 TSS <- unique(promoters(txs, upstream=0, downstream=1))
-	# estimate the library size for normalization:
+		# estimate the library size for normalization:
 librarySize <- estLibSize(bam_good_nuc)
-	# calculate the signals around TSSs:
+		# calculate the signals around TSSs:
 sigs <- enrichedFragments(gal = obj_split_good[c("NucleosomeFree", "mononucleosome", "dinucleosome", "trinucleosome")], TSS=TSS, librarySize=librarySize, TSS.filter=0.5, n.tile = 101, upstream = 1010, downstream = 1010)
-	# log2 transform the signals:
+		# log2 transform the signals:
 sigs.log2 <- lapply(sigs, function(.ele) log2(.ele+1))
-	# plot heatmap:
+		# plot heatmap:
 featureAlignedHeatmap(sigs.log2, reCenterPeaks(TSS, width=2020), zeroAt=.5, n.tile=101)
-	# density plot:
+		# density plot:
 featureAlignedDistribution(sigs.log2, reCenterPeaks(TSS, width=2020), zeroAt=.5, n.tile=101)
 
-# Bad dataset:
+	# bad dataset:
 bam_bad_nuc <- file.path("split_bam_bad", c("NucleosomeFree.bam", "mononucleosome.bam", "dinucleosome.bam", "trinucleosome.bam"))
 librarySize <- estLibSize(bam_bad_nuc)
 sigs <- enrichedFragments(gal = obj_split_bad[c("NucleosomeFree", "mononucleosome", "dinucleosome", "trinucleosome")], TSS=TSS, librarySize=librarySize, TSS.filter=0.5, n.tile = 101, upstream = 1010, downstream = 1010)
 sigs.log2 <- lapply(sigs, function(.ele) log2(.ele+1))
 featureAlignedHeatmap(sigs.log2, reCenterPeaks(TSS, width=2020), zeroAt=.5, n.tile=101)
 featureAlignedDistribution(sigs.log2, reCenterPeaks(TSS, width=2020), zeroAt=.5, n.tile=101)
-```
 
-Observation: for good quality dataset, the nucleosome-free fragments are enriched around the center of the TSSs and the nucleosome-bound fragments are enriched flanking the center of the TSSs; for bad quality dataset, no such enrichments can be detected.
-
-### Demo VIII: streamlining IGV snapshots
-The goal of function `IGVSnapshot` is to facilitate the automatic visualization of signal distribution along any genomic region of interest. 
-CAUTION: no white spaces are allowed in the full path to BAM files.
-NOTE: IGV must be available.
-```{r}
-# Load the IGVSnapshot.R from ATACseqQC:
+# Demo VIII: streamlining IGV snapshots
+	# load the required R code:
 source(system.file("extdata", "IGVSnapshot.R", package = "ATACseqQC"))
-
+	# need to have IGV installed first
 # IGVSnapshot(maxMem="lm", genomeBuild = "hg38", 
-#          bamFileFullPathOrURLs = bam_good_nuc, 
-#          geneNames = c("PQLC2", "MINOS1"))
-```
+#           bamFileFullPathOrURLs = bam_good_nuc, 
+#           geneNames = c("PQLC2", "MINOS1"))
 
-Expected observation: for good quality dataset, reads are enriched to open chromatin regions whereas for bad quality dataset, reads are distributed across the entire genome. 
-
-### Demo IX: assessing DNA-binding factor footprints
-Genomic regions bound by transcription factors/insulators are locally protected from Tn5 tagmentation and the pattern of Tn5 transposase cutting sites around TF-binding sites can be used to infer the footprints of TFs. The function `factorFootprints` is for plotting footprints of DNA-binding factors.
-```{r}
-# Get the CTCF motif info:
+# Demo IX: assessing DNA-binding factor footprints
+	# get the CTCF motif info:
 CTCF <- query(MotifDb, c("CTCF"))
 CTCF <- as.list(CTCF)
 head(CTCF[[1]], digits=2)
-# Good dataset:
+	# good dataset:
 factorFootprints("shifted_good.bam", pfm=CTCF[[1]], genome=Hsapiens, min.score="90%", upstream=100, downstream=100)
-# Bad dataset:
+	# bad dataset:
 factorFootprints("shifted_bad.bam", pfm=CTCF[[1]], genome=Hsapiens, min.score="90%", upstream=100, downstream=100)
-```
-
-Observation: for good quality dataset, the "valley" is deep; for bad quality dataset, the "valley" is shallow. Note the y-scale.
