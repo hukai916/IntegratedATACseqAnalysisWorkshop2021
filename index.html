@@ -66,59 +66,183 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
-<div id="buildabiocworkshop" class="section level1">
+
+<div id="integrated-atac-seq-data-analysis-workshop-from-fastq-to-plots" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
-<a href="#buildabiocworkshop" class="anchor"></a>BuildABiocWorkshop</h1></div>
-<p>This package is a template for building a Bioconductor workshop. The package includes Github actions to:</p>
-<ol>
-<li>Set up bioconductor/bioconductor_docker:devel on Github resources</li>
-<li>Install package dependencies for your package (based on the <code>DESCRIPTION</code> file)</li>
-<li>Run <code><a href="https://rdrr.io/pkg/rcmdcheck/man/rcmdcheck.html">rcmdcheck::rcmdcheck</a></code>
-</li>
-<li>Build a pkgdown website and push it to github pages</li>
-<li>Build a docker image with the installed package and dependencies</li>
-</ol>
-<div id="responsibilities" class="section level2">
-<h2 class="hasAnchor">
-<a href="#responsibilities" class="anchor"></a>Responsibilities</h2>
-<p>This year, package authors will be primarily responsible for:</p>
-<ol>
-<li>Creating a landing site of their choosing for their workshops (a website). This website should be listed in the <code>DESCRIPTION</code> file as the <code>URL</code>.</li>
-<li>Creating a docker account and image that will contain workshop materials and the installed packages necessary to run those materials. The name of the resulting docker image, including “tag” if desired, should be listed in a non-standard tag, <code>DockerImage:</code> in the <code>DESCRIPTION</code> file.</li>
-</ol>
-<p>Both of those tasks can be accomplished using the Github actions included in this template package. The vignette accompanying this package describes how to accomplish both of these tasks.</p>
+<a href="#integrated-atac-seq-data-analysis-workshop-from-fastq-to-plots" class="anchor"></a>Integrated ATAC-seq Data Analysis Workshop: from Fastq to plots</h1></div>
 </div>
-<div id="details" class="section level2">
-<h2 class="hasAnchor">
-<a href="#details" class="anchor"></a>Details</h2>
-<p>For detailed instructions, see the <code>How to build a workshop</code> article/vignette.</p>
-</div>
-<div id="results-of-successful-deployment" class="section level2">
-<h2 class="hasAnchor">
-<a href="#results-of-successful-deployment" class="anchor"></a>Results of successful deployment</h2>
+<div id="instructors-name-and-contact-information" class="section level1">
+<h1 class="hasAnchor">
+<a href="#instructors-name-and-contact-information" class="anchor"></a>Instructors name and contact information</h1>
 <ul>
-<li>A working docker image that contains the installed package and dependencies.</li>
-<li>An up-to-date <code>pkgdown</code> website at <a href="https://YOURUSERNAME.github.io/YOURREPOSITORYNAME/" class="uri">https://YOURUSERNAME.github.io/YOURREPOSITORYNAME/</a>
+<li>Kai Hu: <a href="mailto:kai.hu@umassmed.edu" class="email">kai.hu@umassmed.edu</a>
 </li>
-<li>Docker image will be tagged with <code>latest</code>, <code>sha-XXXXXX</code> where <code>XXXXXX</code> is the hash of the current <code>master</code> commit, and <code>master</code>.</li>
+<li>Haibo Liu: <a href="mailto:haibo.liu@umassmed.edu" class="email">haibo.liu@umassmed.edu</a>
+</li>
+<li>Lihua Julie Zhu: <a href="mailto:julie.zhu@umassmed.edu" class="email">julie.zhu@umassmed.edu</a>
+</li>
 </ul>
 </div>
-<div id="to-use-the-resulting-image" class="section level2">
+<div id="workshop-description" class="section level1">
+<h1 class="hasAnchor">
+<a href="#workshop-description" class="anchor"></a>Workshop description</h1>
+<p>ATAC-seq stands for Assay for Transposase-Accessible Chromatin using sequencing, which leverages a hyperactive transposase, namely Tn5, to cleave and tag (“tagmentation”) double-strand DNA with sequencing adaptors at the same time. ATAC-seq is a faster yet more sensitive method for analyzing genome-wide chromatin accessibility. It is mostly used to determine if there are any changes regarding the open chromatin landscape between control and treatment group. For the demonstration session, this workshop focuses on the downstream post-alignment quality control analysis with the R package ATACseqQC.</p>
+<div id="pre-requisites" class="section level2">
 <h2 class="hasAnchor">
-<a href="#to-use-the-resulting-image" class="anchor"></a>To use the resulting image:</h2>
-<div class="sourceCode" id="cb1"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">-e</span> PASSWORD=<span class="op">&lt;</span>choose_a_password_for_rstudio<span class="op">&gt;</span> -p 8787:8787 YOURDOCKERIMAGENAME</span></code></pre></div>
-<p>Once running, navigate to <a href="https://localhost:8787/" class="uri">https://localhost:8787/</a> and then login with <code>rstudio</code>:<code>yourchosenpassword</code>.</p>
-<p>To try with <strong>this</strong> repository docker image:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">-e</span> PASSWORD=abc <span class="at">-p</span> 8787:8787 seandavi/buildabiocworkshop2020</span></code></pre></div>
-<p><em>NOTE</em>: Running docker that uses the password in plain text like above exposes the password to others in a multi-user system (like a shared workstation or compute node). In practice, consider using an environment variable instead of plain text to pass along passwords and other secrets in docker command lines.</p>
+<a href="#pre-requisites" class="anchor"></a>Pre-requisites</h2>
+<ul>
+<li>General understanding of ATAC-seq analysis or have strong interests</li>
+<li>Basic knowledge of R or Python</li>
+<li>Familiar or have interests in the following concepts:
+<ul>
+<li>Peak calling/annotation</li>
+<li>Nucleosome positioning</li>
+<li>Transcription factor footprinting</li>
+</ul>
+</li>
+<li>A computer that runs on Unix-like system</li>
+</ul>
 </div>
-<div id="whatcha-get" class="section level2">
+<div id="workshop-participation" class="section level2">
 <h2 class="hasAnchor">
-<a href="#whatcha-get" class="anchor"></a>Whatcha get</h2>
-<p><a href="https://seandavi.github.io/BuildABiocWorkshop" class="uri">https://seandavi.github.io/BuildABiocWorkshop</a></p>
-<p><img src="https://github.com/seandavi/BuildABiocWorkshop/raw/master/inst/images/dockerhub_result.png" alt="dockerhub"></p>
+<a href="#workshop-participation" class="anchor"></a>Workshop participation</h2>
+<p>A mini-lecture will be given at the beginning that will cover the basics about ATAC-seq technology as well as a brief comparison to alternatives. Then, the major steps involved in ATAC-seq assay will be discussed along with the commonly practiced software tools, specifically, the usage of the package ATACseqQC for post-alignment QC will be demonstrated. Last will be a Q/A section.</p>
+</div>
+<div id="r--bioconductor-main-packages-used" class="section level2">
+<h2 class="hasAnchor">
+<a href="#r--bioconductor-main-packages-used" class="anchor"></a><em>R</em> / <em>Bioconductor</em> main packages used</h2>
+<ul>
+<li>ATACseqQC [1]</li>
+<li>ChIPpeakAnno [2]</li>
+</ul>
+</div>
+<div id="time-outline" class="section level2">
+<h2 class="hasAnchor">
+<a href="#time-outline" class="anchor"></a>Time outline</h2>
+<table class="table">
+<thead><tr class="header">
+<th>Activity</th>
+<th>Time</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>Overview of the workshop</td>
+<td>2m</td>
+</tr>
+<tr class="even">
+<td>* Acknowledgments</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>* Agenda</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>* Setup of demo environment</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Intro to ATAC-seq technology</td>
+<td>5m</td>
+</tr>
+<tr class="even">
+<td>A typical ATAC-seq workflow</td>
+<td>3m</td>
+</tr>
+<tr class="odd">
+<td>Best practices</td>
+<td>10m</td>
+</tr>
+<tr class="even">
+<td>* Important steps</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>* QCs</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>* Commonly used tools</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Downstream analysis with ATACseqQC</td>
+<td>15m</td>
+</tr>
+<tr class="even">
+<td>* Demo datasets</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>* Post-alignment QCs</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>* Demonstration</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Q/A section</td>
+<td>10m</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
+<div id="workshop-goals-and-objectives" class="section level1">
+<h1 class="hasAnchor">
+<a href="#workshop-goals-and-objectives" class="anchor"></a>Workshop goals and objectives</h1>
+<div id="learning-goals" class="section level2">
+<h2 class="hasAnchor">
+<a href="#learning-goals" class="anchor"></a>Learning goals</h2>
+<ul>
+<li>Be able to describe the basic ideas behind ATAC-seq</li>
+<li>Get familiar with the commonly practiced tools used in ATAC-seq analysis</li>
+</ul>
+</div>
+<div id="learning-objectives" class="section level2">
+<h2 class="hasAnchor">
+<a href="#learning-objectives" class="anchor"></a>Learning objectives</h2>
+<ul>
+<li>Get familiar with the package ATACseqQC</li>
+<li>Perform diagnostic plotting of ATAC-seq data</li>
+</ul>
+</div>
+</div>
+<div id="workshop-slides-video-clip-and-demo-codes" class="section level1">
+<h1 class="hasAnchor">
+<a href="#workshop-slides-video-clip-and-demo-codes" class="anchor"></a>Workshop slides, video clip, and demo codes</h1>
+<div id="slides" class="section level2">
+<h2 class="hasAnchor">
+<a href="#slides" class="anchor"></a>Slides</h2>
+<ul>
+<li>inst/vignettes/IntegratedATACseqAnalysisWorkshop2021.pdf</li>
+</ul>
+</div>
+<div id="video-clip" class="section level2">
+<h2 class="hasAnchor">
+<a href="#video-clip" class="anchor"></a>Video clip</h2>
+<ul>
+<li>to be added</li>
+</ul>
+</div>
+<div id="demo-codes" class="section level2">
+<h2 class="hasAnchor">
+<a href="#demo-codes" class="anchor"></a>Demo codes</h2>
+<ul>
+<li>inst/vignettes/demo.R</li>
+<li>inst/vignettes/demo.Rmd</li>
+<li>inst/vignettes/demo.html</li>
+</ul>
+</div>
+<div id="references" class="section level2">
+<h2 class="hasAnchor">
+<a href="#references" class="anchor"></a>References</h2>
+<p>[1] <a href="https://bioconductor.org/packages/release/bioc/html/ATACseqQC.html" class="uri">https://bioconductor.org/packages/release/bioc/html/ATACseqQC.html</a></p>
+<p>[2] <a href="https://bioconductor.org/packages/release/bioc/html/ChIPpeakAnno.html" class="uri">https://bioconductor.org/packages/release/bioc/html/ChIPpeakAnno.html</a></p>
+</div>
+</div>
+
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

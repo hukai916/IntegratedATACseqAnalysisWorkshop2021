@@ -2,7 +2,7 @@ pandoc: 2.11.4
 pkgdown: 1.6.1
 pkgdown_sha: ~
 articles: {}
-last_built: 2021-07-20T15:36Z
+last_built: 2021-08-02T21:16Z
 urls:
   reference: https://hukai916.github.io/IntegratedATACseqAnalysisWorkshop2021//reference
   article: https://hukai916.github.io/IntegratedATACseqAnalysisWorkshop2021//articles
